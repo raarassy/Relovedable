@@ -13,24 +13,28 @@ class Review extends Model
         'id_pembeli',
         'id_penjual',
         'rating',
-        'komentar',
+        'ulasan',
         'tanggal_review',
+    ];
+
+    protected $casts = [
+        'tanggal_review' => 'datetime',
     ];
 
     public $timestamps = false;
 
     public function transaksi()
     {
-        return $this->belongsTo(Transaksi::class, 'id_transaksi');
+        return $this->belongsTo(Transaksi::class, 'id_transaksi', 'id_transaksi');
     }
 
     public function pembeli()
     {
-        return $this->belongsTo(User::class, 'id_pembeli');
+        return $this->belongsTo(User::class, 'id_pembeli', 'id_user');
     }
 
     public function penjual()
     {
-        return $this->belongsTo(User::class, 'id_penjual');
+        return $this->belongsTo(User::class, 'id_penjual', 'id_user');
     }
 }

@@ -13,28 +13,32 @@ class Transaksi extends Model
         'id_pembeli',
         'id_penjual',
         'tanggal_transaksi',
-        'status',
+        'status_transaksi',
+    ];
+
+    protected $casts = [
+        'tanggal_transaksi' => 'datetime',
     ];
 
     public $timestamps = false;
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'id_barang');
+        return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
     }
 
     public function pembeli()
     {
-        return $this->belongsTo(User::class, 'id_pembeli');
+        return $this->belongsTo(User::class, 'id_pembeli', 'id_user');
     }
 
     public function penjual()
     {
-        return $this->belongsTo(User::class, 'id_penjual');
+        return $this->belongsTo(User::class, 'id_penjual', 'id_user');
     }
 
     public function review()
     {
-        return $this->hasOne(Review::class, 'id_transaksi');
+        return $this->hasOne(Review::class, 'id_transaksi', 'id_transaksi');
     }
 }

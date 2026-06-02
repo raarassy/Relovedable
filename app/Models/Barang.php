@@ -9,37 +9,69 @@ class Barang extends Model
     protected $primaryKey = 'id_barang';
 
     protected $fillable = [
-        'id_penjual',
+        'id_toko',
         'nama_barang',
-        'deskripsi',
-        'harga',
         'kategori',
-        'status',
+        'harga',
+        'deskripsi',
+        'kondisi',
+        'metode_transaksi',
+        'status_barang',
     ];
 
-    public $timestamps = false;
+    protected $casts = [
+        'metode_transaksi' => 'boolean',
+    ];
 
-    // Relasi ke User (penjual)
-    public function penjual()
+    // Relasi ke Toko
+    public function toko()
     {
-        return $this->belongsTo(User::class, 'id_penjual');
+        return $this->belongsTo(Toko::class, 'id_toko', 'id_toko');
+    }
+
+    // Penjual (user pemilik toko) — aksesor: $barang->penjual
+    public function getPenjualAttribute()
+    {
+        return $this->toko?->user;
     }
 
     // Relasi ke FotoBarang
     public function fotoBarangs()
     {
-        return $this->hasMany(FotoBarang::class, 'id_barang');
+        return $this->hasMany(FotoBarang::class, 'id_barang', 'id_barang');
+    }
+
+    // Foto utama
+    public function fotoUtama()
+    {
+        return $this->hasOne(FotoBarang::class, 'id_barang', 'id_barang');
     }
 
     // Relasi ke Chat
     public function chats()
     {
-        return $this->hasMany(Chat::class, 'id_barang');
+        return $this->hasMany(Chat::class, 'id_barang', 'id_barang');
     }
 
     // Relasi ke Transaksi
     public function transaksis()
     {
-        return $this->hasMany(Transaksi::class, 'id_barang');
+        return $this->hasMany(Transaksi::class, 'id_barang', 'id_barang');
+    }
+
+    // Relasi ke Favorit
+    public function favorits()
+    {
+        return $this->hasMany(Favorit::class, 'id_barang', 'id_barang');
+    }
+
+    // Apakah difavoritkan oleh user tertentu
+    public function difavoritkanOleh($userId): bool
+    {
+        if (! $userId) {
+            return false;
+        }
+
+        return $this->favorits()->where('id_user', $userId)->exists();
     }
 }

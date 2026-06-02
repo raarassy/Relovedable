@@ -24,16 +24,16 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreignId('id_pembeli')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->foreignId('id_penjual')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->integer('rating');
 
-            $table->text('komentar')->nullable();
+            $table->text('ulasan')->nullable();
 
             $table->dateTime('tanggal_review')
                 ->useCurrent();

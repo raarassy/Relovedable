@@ -11,18 +11,20 @@ return new class extends Migration
         Schema::create('barangs', function (Blueprint $table) {
             $table->id('id_barang');
 
-            $table->unsignedBigInteger('id_penjual');
+            $table->unsignedBigInteger('id_toko');
 
-            $table->foreign('id_penjual')
-                ->references('id')
-                ->on('users')
+            $table->foreign('id_toko')
+                ->references('id_toko')
+                ->on('tokos')
                 ->onDelete('cascade');
 
-            $table->string('nama_barang');
-            $table->text('deskripsi');
+            $table->string('nama_barang', 100);
+            $table->string('kategori', 50);
             $table->integer('harga');
-            $table->string('kategori');
-            $table->enum('status', ['tersedia', 'terjual']);
+            $table->text('deskripsi');
+            $table->enum('kondisi', ['baru', 'seperti_baru', 'bekas']);
+            $table->boolean('metode_transaksi')->default(false); // false = kirim, true = COD tersedia
+            $table->enum('status_barang', ['tersedia', 'terjual', 'nonaktif'])->default('tersedia');
 
             $table->timestamps();
         });
