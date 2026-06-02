@@ -5,22 +5,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\FavoritController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TokoController;
-use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\VerifikasiPenjualController;
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIK
+| PUBLIK (tanpa login)
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/katalog', [BarangController::class, 'katalog']);
+Route::get('/toko/{id}', [TokoController::class, 'show'])->whereNumber('id');
 
 /*
 |--------------------------------------------------------------------------
@@ -37,20 +35,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
-| AREA LOGIN (semua role)
+| AREA LOGIN (semua role) — detail produk & chat memerlukan login
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    // Detail barang (butuh login)
+    Route::get('/barang/{id}', [BarangController::class, 'show'])->whereNumber('id');
+
     // Profil
     Route::get('/profil', [ProfileController::class, 'show']);
     Route::get('/profil/edit', [ProfileController::class, 'edit']);
     Route::put('/profil', [ProfileController::class, 'update']);
 
-    // Favorit
-    Route::get('/favorit', [FavoritController::class, 'index']);
-    Route::post('/favorit/{barang}/toggle', [FavoritController::class, 'toggle']);
-
-    // Follow
+    // Follow toko (menggantikan favorit)
     Route::post('/follow/{user}/toggle', [FollowController::class, 'toggle']);
 
     // Chat
@@ -58,12 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat/mulai/{barang}', [ChatController::class, 'mulai']);
     Route::get('/chat/{barang}/{lawan}', [ChatController::class, 'show']);
     Route::post('/chat/{barang}/{lawan}', [ChatController::class, 'store']);
-
-    // Transaksi & Review
-    Route::get('/transaksi', [TransaksiController::class, 'index']);
-    Route::post('/transaksi', [TransaksiController::class, 'store']);
-    Route::get('/transaksi/{transaksi}/review', [ReviewController::class, 'create']);
-    Route::post('/transaksi/{transaksi}/review', [ReviewController::class, 'store']);
 
     // Daftar sebagai penjual
     Route::get('/penjual/daftar', [VerifikasiPenjualController::class, 'create']);
@@ -99,11 +90,3 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/verifikasi/{id}/approve', [AdminController::class, 'approve']);
     Route::post('/verifikasi/{id}/reject', [AdminController::class, 'reject']);
 });
-
-/*
-|--------------------------------------------------------------------------
-| PUBLIK (lanjutan) — detail toko & barang (numeric agar tak bentrok)
-|--------------------------------------------------------------------------
-*/
-Route::get('/toko/{id}', [TokoController::class, 'show'])->whereNumber('id');
-Route::get('/barang/{id}', [BarangController::class, 'show'])->whereNumber('id');

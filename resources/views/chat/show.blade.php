@@ -21,16 +21,6 @@
                 <a href="{{ url('/barang/' . $barang->id_barang) }}" class="text-xs text-relove-500 hover:underline truncate block">{{ $barang->nama_barang }} — Rp {{ number_format($barang->harga, 0, ',', '.') }}</a>
             </div>
 
-            @if($barang->toko?->id_user === auth()->id() && $barang->status_barang === 'tersedia')
-                <form action="{{ url('/transaksi') }}" method="POST" onsubmit="return confirm('Tandai barang ini terjual ke {{ $lawan->nama }}?')">
-                    @csrf
-                    <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
-                    <input type="hidden" name="id_pembeli" value="{{ $lawan->id_user }}">
-                    <button class="rounded-full bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 shrink-0">Tandai Terjual</button>
-                </form>
-            @elseif($barang->status_barang === 'terjual')
-                <span class="text-xs font-semibold text-gray-400 shrink-0">Terjual</span>
-            @endif
         </div>
 
         {{-- Pesan --}}

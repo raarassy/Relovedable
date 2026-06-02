@@ -22,21 +22,21 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-6">
-            <a href="{{ url('/favorit') }}" class="bg-white/70 rounded-xl p-3 text-center hover:bg-white">
-                <p class="text-xl font-extrabold text-relove-600">{{ $jumlahFavorit }}</p>
-                <p class="text-xs text-gray-400">Favorit</p>
-            </a>
             <div class="bg-white/70 rounded-xl p-3 text-center">
                 <p class="text-xl font-extrabold text-relove-600">{{ $jumlahMengikuti }}</p>
-                <p class="text-xs text-gray-400">Mengikuti</p>
+                <p class="text-xs text-gray-400">Toko Diikuti</p>
             </div>
+            <a href="{{ url('/chat') }}" class="bg-white/70 rounded-xl p-3 text-center hover:bg-white">
+                <p class="text-xl font-extrabold text-relove-600">💬</p>
+                <p class="text-xs text-gray-400">Pesan</p>
+            </a>
         </div>
     </div>
 
     {{-- Aksi cepat --}}
     <div class="grid sm:grid-cols-3 gap-3 mt-6">
-        <a href="{{ url('/transaksi') }}" class="bg-white rounded-2xl border border-relove-100 p-4 hover:border-relove-300 text-center">🧾<p class="font-semibold text-sm mt-1">Transaksi</p></a>
-        <a href="{{ url('/favorit') }}" class="bg-white rounded-2xl border border-relove-100 p-4 hover:border-relove-300 text-center">❤️<p class="font-semibold text-sm mt-1">Favorit</p></a>
+        <a href="{{ url('/chat') }}" class="bg-white rounded-2xl border border-relove-100 p-4 hover:border-relove-300 text-center">💬<p class="font-semibold text-sm mt-1">Pesan</p></a>
+        <a href="{{ url('/katalog') }}" class="bg-white rounded-2xl border border-relove-100 p-4 hover:border-relove-300 text-center">🛍️<p class="font-semibold text-sm mt-1">Jelajahi</p></a>
         @if($user->isPenjual() && $user->toko)
             <a href="{{ url('/toko/' . $user->toko->id_toko) }}" class="bg-white rounded-2xl border border-relove-100 p-4 hover:border-relove-300 text-center">🏪<p class="font-semibold text-sm mt-1">Toko Saya</p></a>
         @elseif(!$user->isAdmin())
