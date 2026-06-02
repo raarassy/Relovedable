@@ -22,22 +22,23 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreignId('id_pembeli')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->foreignId('id_penjual')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->dateTime('tanggal_transaksi')
                 ->useCurrent();
 
-            $table->enum('status', [
+            $table->enum('status_transaksi', [
                 'pending',
                 'dibayar',
                 'dikirim',
-                'selesai'
-            ]);
+                'selesai',
+                'dibatalkan'
+            ])->default('pending');
         });
     }
 

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id('id_chat');
 
             $table->foreignId('id_pengirim')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->foreignId('id_penerima')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->onDelete('cascade');
 
             $table->unsignedBigInteger('id_barang');
