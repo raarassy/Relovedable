@@ -1,3 +1,9 @@
+    <h1>Daftar Barang</h1>
+
+    <a href="/barang/create">Tambah Barang</a>
+
+    <hr>
+    
 @foreach($barangs as $barang)
 
     @if($barang->fotoBarangs->first())
