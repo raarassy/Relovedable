@@ -8,7 +8,9 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\VerifikasiPenjualController;
 
 /*
@@ -17,6 +19,8 @@ use App\Http\Controllers\VerifikasiPenjualController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/landing-page', [HomeController::class, 'landing']);
+Route::get('/beranda', [HomeController::class, 'beranda']);
 Route::get('/katalog', [BarangController::class, 'katalog']);
 Route::get('/toko/{id}', [TokoController::class, 'show'])->whereNumber('id');
 
@@ -63,6 +67,12 @@ Route::middleware('auth')->group(function () {
     // Edit toko sendiri (harus sebelum /toko/{id})
     Route::get('/toko/edit', [TokoController::class, 'edit']);
     Route::put('/toko/update', [TokoController::class, 'update']);
+
+    // Transaksi & ulasan
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::get('/transaksi/{transaksiId}/review', [ReviewController::class, 'create'])->whereNumber('transaksiId');
+    Route::post('/transaksi/{transaksiId}/review', [ReviewController::class, 'store'])->whereNumber('transaksiId');
 });
 
 /*
@@ -89,4 +99,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/verifikasi/{id}/ktp', [AdminController::class, 'ktp']);
     Route::post('/verifikasi/{id}/approve', [AdminController::class, 'approve']);
     Route::post('/verifikasi/{id}/reject', [AdminController::class, 'reject']);
+
+    // Verifikasi akun pengguna
+    Route::get('/akun', [AdminController::class, 'akun']);
+    Route::post('/akun/{id}/approve', [AdminController::class, 'approveAkun'])->whereNumber('id');
+    Route::post('/akun/{id}/reject', [AdminController::class, 'rejectAkun'])->whereNumber('id');
 });

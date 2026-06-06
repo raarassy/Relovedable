@@ -23,6 +23,7 @@ class AuthController extends Controller
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username'],
             'email' => ['required', 'email', 'max:100', 'unique:users,email'],
             'no_hp' => ['nullable', 'string', 'max:20'],
+            'foto_profil' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
@@ -31,14 +32,14 @@ class AuthController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'no_hp' => $data['no_hp'] ?? null,
+            'foto_profil' => $request->file('foto_profil')?->store('profil', 'public'),
             'password' => Hash::make($data['password']),
             'role' => 'pembeli',
+            'status_akun' => 'pending',
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect('/')->with('success', 'Selamat datang di Relovedable, ' . $user->nama . '!');
+        // Belum login — akun harus diverifikasi admin dulu
+        return redirect('/login')->with('success', 'Pendaftaran berhasil! Akunmu menunggu verifikasi admin. Kamu bisa masuk setelah disetujui.');
     }
 
     // ===== Login =====
@@ -58,6 +59,19 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Email atau password salah.');
+        }
+
+        // Password benar — cek status verifikasi akun
+        if (! auth()->user()->isAktif()) {
+            $status = auth()->user()->status_akun;
+            Auth::logout();
+            $request->session()->regenerateToken();
+
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', $status === 'ditolak'
+                    ? 'Akunmu ditolak oleh admin.'
+                    : 'Akunmu masih menunggu verifikasi admin.');
         }
 
         $request->session()->regenerate();

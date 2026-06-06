@@ -10,8 +10,13 @@
             <p class="text-sm text-gray-400 mt-1">Gabung dan mulai belanja preloved</p>
         </div>
 
-        <form action="{{ url('/register') }}" method="POST" class="space-y-4">
+        <form action="{{ url('/register') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Foto Profil <span class="text-gray-300">(opsional)</span></label>
+                <input type="file" name="foto_profil" accept="image/*"
+                       class="w-full text-sm text-gray-500 file:mr-3 file:rounded-full file:border-0 file:bg-relove-100 file:text-relove-600 file:px-4 file:py-2 file:font-semibold">
+            </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600 mb-1">Nama Lengkap</label>
                 <input type="text" name="nama" value="{{ old('nama') }}" required autofocus

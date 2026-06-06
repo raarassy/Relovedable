@@ -28,6 +28,7 @@ class User extends Authenticatable
         'no_hp',
         'foto_profil',
         'role',
+        'status_akun',
     ];
 
     /**
@@ -62,6 +63,11 @@ class User extends Authenticatable
     public function isPenjual(): bool
     {
         return $this->role === 'penjual';
+    }
+
+    public function isAktif(): bool
+    {
+        return $this->status_akun === 'aktif';
     }
 
     // ===== Relasi =====

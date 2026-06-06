@@ -6,7 +6,6 @@
     $fotos = $barang->fotoBarangs;
     $penjual = $barang->toko?->user;
     $isOwner = auth()->check() && $penjual && auth()->id() === $penjual->id_user;
-    $isFav = auth()->check() ? $barang->difavoritkanOleh(auth()->id()) : false;
 @endphp
 
 @section('content')
@@ -47,7 +46,7 @@
                 <dt class="text-gray-400">Kondisi</dt>
                 <dd class="font-medium text-gray-700">{{ $kondisiLabel }}</dd>
                 <dt class="text-gray-400">Metode</dt>
-                <dd class="font-medium text-gray-700">{{ $barang->metode_transaksi ? 'COD tersedia' : 'Kirim' }}</dd>
+                <dd class="font-medium text-gray-700">{{ collect(['COD' => $barang->bisa_cod, 'Ekspedisi' => $barang->bisa_ekspedisi])->filter()->keys()->implode(' & ') ?: '-' }}</dd>
                 <dt class="text-gray-400">Status</dt>
                 <dd class="font-medium {{ $barang->status_barang === 'tersedia' ? 'text-green-600' : 'text-gray-500' }}">{{ ucfirst($barang->status_barang) }}</dd>
             </dl>
@@ -82,11 +81,13 @@
                     @unless($isOwner)
                         <a href="{{ url('/chat/mulai/' . $barang->id_barang) }}"
                            class="flex-1 text-center rounded-xl bg-relove-500 hover:bg-relove-600 text-white font-semibold py-3">💬 Chat Penjual</a>
-                        <form action="{{ url('/favorit/' . $barang->id_barang . '/toggle') }}" method="POST">
-                            @csrf
-                            <button type="submit"
-                                    class="rounded-xl border border-relove-200 px-5 py-3 text-lg hover:bg-relove-50">{{ $isFav ? '❤️' : '🤍' }}</button>
-                        </form>
+                        @if($barang->toko)
+                            <form action="{{ url('/follow/' . $barang->toko->id_user . '/toggle') }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                        class="rounded-xl border px-5 py-3 text-sm font-semibold {{ $sedangDiikuti ? 'border-relove-300 text-relove-600 bg-relove-50' : 'border-relove-200 text-gray-600 hover:bg-relove-50' }}">{{ $sedangDiikuti ? 'Mengikuti ✓' : '+ Ikuti Toko' }}</button>
+                            </form>
+                        @endif
                     @else
                         <a href="{{ url('/barang/edit/' . $barang->id_barang) }}"
                            class="flex-1 text-center rounded-xl border border-relove-200 text-relove-600 font-semibold py-3 hover:bg-relove-50">Edit Barang Ini</a>

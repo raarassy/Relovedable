@@ -11,9 +11,11 @@
         @csrf
 
         <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">Foto Barang <span class="text-gray-300">(bisa lebih dari satu)</span></label>
-            <input type="file" name="foto[]" multiple accept="image/*"
+            <label class="block text-sm font-medium text-gray-600 mb-1">Foto Barang <span class="text-gray-300">(maksimal 8)</span></label>
+            <input type="file" name="foto[]" id="fotoInput" multiple accept="image/*"
                    class="w-full text-sm text-gray-500 file:mr-3 file:rounded-full file:border-0 file:bg-relove-100 file:text-relove-600 file:px-4 file:py-2 file:font-semibold">
+            <p id="fotoInfo" class="text-xs text-gray-400 mt-1.5">Bisa pilih beberapa sekaligus. Maksimal 8 foto, format JPG/PNG/WebP.</p>
+            <div id="fotoPreview" class="flex flex-wrap gap-2 mt-3"></div>
         </div>
 
         <div>
@@ -25,8 +27,13 @@
         <div class="grid sm:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-600 mb-1">Kategori</label>
-                <input type="text" name="kategori" value="{{ old('kategori') }}" required placeholder="Atasan, Celana, dll"
-                       class="w-full rounded-xl border border-relove-200 px-4 py-2.5 text-sm focus:border-relove-400 focus:ring-2 focus:ring-relove-200 outline-none">
+                <select name="kategori" required
+                        class="w-full rounded-xl border border-relove-200 px-4 py-2.5 text-sm focus:border-relove-400 focus:ring-2 focus:ring-relove-200 outline-none">
+                    <option value="" disabled {{ old('kategori') ? '' : 'selected' }}>Pilih kategori…</option>
+                    @foreach(\App\Models\Barang::KATEGORI as $kat)
+                        <option value="{{ $kat }}" {{ old('kategori') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                    @endforeach
+                </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600 mb-1">Harga (Rp)</label>
@@ -47,11 +54,18 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600 mb-1">Metode Transaksi</label>
-                <label class="flex items-center gap-2 mt-2.5 text-sm text-gray-600">
-                    <input type="checkbox" name="metode_transaksi" value="1" {{ old('metode_transaksi') ? 'checked' : '' }}
-                           class="rounded border-relove-300 text-relove-500 focus:ring-relove-300">
-                    COD tersedia
-                </label>
+                <div class="flex flex-col gap-2 mt-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-600">
+                        <input type="checkbox" name="bisa_cod" value="1" {{ old('bisa_cod') ? 'checked' : '' }}
+                               class="rounded border-relove-300 text-relove-500 focus:ring-relove-300">
+                        COD (ketemuan langsung)
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-600">
+                        <input type="checkbox" name="bisa_ekspedisi" value="1" {{ old('bisa_ekspedisi', true) ? 'checked' : '' }}
+                               class="rounded border-relove-300 text-relove-500 focus:ring-relove-300">
+                        Ekspedisi (kirim via kurir)
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -67,4 +81,37 @@
         </div>
     </form>
 </div>
+
+<script>
+(function () {
+    const input = document.getElementById('fotoInput');
+    const info = document.getElementById('fotoInfo');
+    const preview = document.getElementById('fotoPreview');
+    if (!input) return;
+    const MAX = 8;
+
+    input.addEventListener('change', function () {
+        const files = Array.from(input.files);
+        preview.innerHTML = '';
+
+        files.forEach(function (file) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'w-20 h-20 rounded-xl object-cover border border-relove-100';
+            preview.appendChild(img);
+        });
+
+        if (files.length > MAX) {
+            info.textContent = `Kebanyakan — kamu pilih ${files.length} foto. Maksimal ${MAX}, kurangi dulu ya.`;
+            info.className = 'text-xs text-red-500 mt-1.5 font-medium';
+        } else if (files.length > 0) {
+            info.textContent = `${files.length} dari ${MAX} foto dipilih.`;
+            info.className = 'text-xs text-gray-500 mt-1.5';
+        } else {
+            info.textContent = `Bisa pilih beberapa sekaligus. Maksimal ${MAX} foto, format JPG/PNG/WebP.`;
+            info.className = 'text-xs text-gray-400 mt-1.5';
+        }
+    });
+})();
+</script>
 @endsection

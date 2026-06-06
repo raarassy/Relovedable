@@ -8,6 +8,17 @@ class Barang extends Model
 {
     protected $primaryKey = 'id_barang';
 
+    // Daftar kategori baku — satu sumber untuk form upload, filter katalog, & pills home
+    public const KATEGORI = [
+        'Fashion',
+        'Tas',
+        'Sepatu',
+        'Aksesoris',
+        'Elektronik',
+        'Buku',
+        'Lainnya',
+    ];
+
     protected $fillable = [
         'id_toko',
         'nama_barang',
@@ -15,12 +26,14 @@ class Barang extends Model
         'harga',
         'deskripsi',
         'kondisi',
-        'metode_transaksi',
+        'bisa_cod',
+        'bisa_ekspedisi',
         'status_barang',
     ];
 
     protected $casts = [
-        'metode_transaksi' => 'boolean',
+        'bisa_cod' => 'boolean',
+        'bisa_ekspedisi' => 'boolean',
     ];
 
     // Relasi ke Toko

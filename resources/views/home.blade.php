@@ -46,24 +46,15 @@
 
 {{-- ===== CATEGORY PILLS ===== --}}
 <div class="max-w-7xl mx-auto px-4 mt-4">
-    @php
-        $kategoris = [
-            'Semua' => null,
-            'Pakaian' => 'Atasan',
-            'Tas' => 'Tas',
-            'Sepatu' => 'Sepatu',
-            'Aksesoris' => 'Aksesoris',
-            'Elektronik' => 'Elektronik',
-            'Buku' => 'Buku',
-            'Lainnya' => 'Lainnya',
-        ];
-    @endphp
     <div class="flex flex-wrap gap-2">
-        @foreach($kategoris as $label => $val)
-            <a href="{{ $val ? url('/katalog?kategori=' . urlencode($val)) : url('/katalog') }}"
-               class="rounded-full px-4 py-1.5 text-sm font-medium transition
-                      {{ $label === 'Semua' ? 'bg-relove-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-relove-300 hover:text-relove-600' }}">
-                {{ $label }}
+        <a href="{{ url('/katalog') }}"
+           class="rounded-full px-4 py-1.5 text-sm font-medium transition bg-relove-500 text-white">
+            Semua
+        </a>
+        @foreach(\App\Models\Barang::KATEGORI as $kat)
+            <a href="{{ url('/katalog?kategori=' . urlencode($kat)) }}"
+               class="rounded-full px-4 py-1.5 text-sm font-medium transition bg-white border border-gray-200 text-gray-600 hover:border-relove-300 hover:text-relove-600">
+                {{ $kat }}
             </a>
         @endforeach
     </div>
@@ -81,7 +72,7 @@
     <div class="flex items-start justify-between mb-4">
         <div>
             <h2 class="text-lg font-bold text-gray-800">Rekomendasi Untukmu</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Berdasarkan pencarian dan barang favoritmu.</p>
+            <p class="text-xs text-gray-400 mt-0.5">Berdasarkan barang terbaru di Relovedable.</p>
         </div>
         <a href="{{ url('/katalog') }}" class="text-sm font-semibold text-relove-500 hover:text-relove-600 mt-0.5">Eksplorasi Lagi →</a>
     </div>

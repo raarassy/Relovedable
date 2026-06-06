@@ -14,6 +14,7 @@ class Transaksi extends Model
         'id_penjual',
         'tanggal_transaksi',
         'status_transaksi',
+        'metode',
     ];
 
     protected $casts = [

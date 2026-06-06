@@ -4,7 +4,12 @@
 @section('content')
 <div class="max-w-5xl mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold text-gray-800 mb-1">Verifikasi Penjual</h1>
-    <p class="text-sm text-gray-400 mb-6">Tinjau pengajuan & setujui calon penjual.</p>
+    <p class="text-sm text-gray-400 mb-4">Tinjau pengajuan & setujui calon penjual.</p>
+
+    <div class="flex gap-2 mb-6">
+        <a href="{{ url('/admin/verifikasi') }}" class="rounded-full px-4 py-1.5 text-sm font-medium {{ request()->is('admin/verifikasi') ? 'bg-relove-500 text-white' : 'bg-white border border-relove-200 text-gray-600 hover:bg-relove-50' }}">Verifikasi Penjual</a>
+        <a href="{{ url('/admin/akun') }}" class="rounded-full px-4 py-1.5 text-sm font-medium {{ request()->is('admin/akun') ? 'bg-relove-500 text-white' : 'bg-white border border-relove-200 text-gray-600 hover:bg-relove-50' }}">Verifikasi Akun</a>
+    </div>
 
     @if($pengajuan->isEmpty())
         <div class="bg-white rounded-2xl border border-dashed border-relove-200 p-16 text-center text-gray-400">

@@ -33,6 +33,7 @@ class TransaksiController extends Controller
         $data = $request->validate([
             'id_barang' => ['required', 'exists:barangs,id_barang'],
             'id_pembeli' => ['required', 'exists:users,id_user'],
+            'metode' => ['required', 'in:cod,ekspedisi'],
         ]);
 
         $barang = Barang::with('toko')->findOrFail($data['id_barang']);
@@ -40,8 +41,19 @@ class TransaksiController extends Controller
         // Hanya penjual pemilik barang yang boleh menandai
         abort_unless($barang->toko?->id_user === auth()->id(), 403);
 
+        if ($barang->status_barang === 'terjual') {
+            return back()->with('error', 'Barang ini sudah ditandai terjual.');
+        }
+
         if ($data['id_pembeli'] == auth()->id()) {
             return back()->with('error', 'Pembeli tidak boleh dirimu sendiri.');
+        }
+
+        // Metode harus termasuk yang ditawarkan barang
+        $metodeDidukung = ($data['metode'] === 'cod' && $barang->bisa_cod)
+            || ($data['metode'] === 'ekspedisi' && $barang->bisa_ekspedisi);
+        if (! $metodeDidukung) {
+            return back()->with('error', 'Metode itu tidak tersedia untuk barang ini.');
         }
 
         DB::transaction(function () use ($barang, $data) {
@@ -49,6 +61,7 @@ class TransaksiController extends Controller
                 'id_barang' => $barang->id_barang,
                 'id_pembeli' => $data['id_pembeli'],
                 'id_penjual' => auth()->id(),
+                'metode' => $data['metode'],
                 'status_transaksi' => 'selesai',
             ]);
 
