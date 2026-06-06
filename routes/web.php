@@ -19,6 +19,8 @@ use App\Http\Controllers\VerifikasiPenjualController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/landing-page', [HomeController::class, 'landing']);
+Route::get('/beranda', [HomeController::class, 'beranda']);
 Route::get('/katalog', [BarangController::class, 'katalog']);
 Route::get('/toko/{id}', [TokoController::class, 'show'])->whereNumber('id');
 

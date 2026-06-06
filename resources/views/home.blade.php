@@ -72,7 +72,7 @@
     <div class="flex items-start justify-between mb-4">
         <div>
             <h2 class="text-lg font-bold text-gray-800">Rekomendasi Untukmu</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Berdasarkan pencarian dan barang favoritmu.</p>
+            <p class="text-xs text-gray-400 mt-0.5">Berdasarkan barang terbaru di Relovedable.</p>
         </div>
         <a href="{{ url('/katalog') }}" class="text-sm font-semibold text-relove-500 hover:text-relove-600 mt-0.5">Eksplorasi Lagi →</a>
     </div>
