@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Toko;
+use App\Models\User;
 use App\Models\VerifikasiPenjual;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -72,5 +73,36 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Pengajuan ditolak.');
+    }
+
+    // ===== Verifikasi akun pengguna =====
+
+    // Daftar akun (selain admin) untuk diverifikasi
+    public function akun()
+    {
+        $akun = User::where('role', '!=', 'admin')
+            ->orderByRaw("FIELD(status_akun, 'pending', 'aktif', 'ditolak')")
+            ->latest('id_user')
+            ->get();
+
+        return view('admin.akun', compact('akun'));
+    }
+
+    // Setujui akun
+    public function approveAkun($id)
+    {
+        $user = User::where('role', '!=', 'admin')->findOrFail($id);
+        $user->update(['status_akun' => 'aktif']);
+
+        return back()->with('success', 'Akun disetujui.');
+    }
+
+    // Tolak akun
+    public function rejectAkun($id)
+    {
+        $user = User::where('role', '!=', 'admin')->findOrFail($id);
+        $user->update(['status_akun' => 'ditolak']);
+
+        return back()->with('success', 'Akun ditolak.');
     }
 }

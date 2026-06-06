@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Follow;
 use App\Models\FotoBarang;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class BarangController extends Controller
 {
@@ -26,11 +28,7 @@ class BarangController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $kategoriList = Barang::query()
-            ->select('kategori')
-            ->distinct()
-            ->orderBy('kategori')
-            ->pluck('kategori');
+        $kategoriList = collect(Barang::KATEGORI);
 
         return view('barang.katalog', compact('barangs', 'kategoriList', 'q', 'kategori'));
     }
@@ -60,7 +58,12 @@ class BarangController extends Controller
             ->take(4)
             ->get();
 
-        return view('barang.show', compact('barang', 'reviews', 'ratingRata', 'jumlahReview', 'serupa'));
+        // Status follow toko (menggantikan favorit)
+        $sedangDiikuti = auth()->check() && $penjualId
+            ? Follow::where('id_pengikut', auth()->id())->where('id_diikuti', $penjualId)->exists()
+            : false;
+
+        return view('barang.show', compact('barang', 'reviews', 'ratingRata', 'jumlahReview', 'serupa', 'sedangDiikuti'));
     }
 
     // ===== PENJUAL (butuh role penjual) =====
@@ -86,6 +89,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateBarang($request);
+        $this->pastikanAdaMetode($request);
 
         $toko = auth()->user()->toko;
 
@@ -96,7 +100,8 @@ class BarangController extends Controller
             'harga' => $data['harga'],
             'deskripsi' => $data['deskripsi'],
             'kondisi' => $data['kondisi'],
-            'metode_transaksi' => $request->boolean('metode_transaksi'),
+            'bisa_cod' => $request->boolean('bisa_cod'),
+            'bisa_ekspedisi' => $request->boolean('bisa_ekspedisi'),
             'status_barang' => 'tersedia',
         ]);
 
@@ -119,6 +124,15 @@ class BarangController extends Controller
         $this->pastikanPemilik($barang);
 
         $data = $this->validateBarang($request);
+        $this->pastikanAdaMetode($request);
+
+        // Total foto (lama + baru) tidak boleh lebih dari 8
+        $jumlahLama = $barang->fotoBarangs()->count();
+        $jumlahBaru = $request->hasFile('foto') ? count($request->file('foto')) : 0;
+        if ($jumlahLama + $jumlahBaru > 8) {
+            return back()->withInput()
+                ->with('error', "Maksimal 8 foto per barang. Sudah ada {$jumlahLama}, kamu menambah {$jumlahBaru}.");
+        }
 
         $barang->update([
             'nama_barang' => $data['nama_barang'],
@@ -126,7 +140,8 @@ class BarangController extends Controller
             'harga' => $data['harga'],
             'deskripsi' => $data['deskripsi'],
             'kondisi' => $data['kondisi'],
-            'metode_transaksi' => $request->boolean('metode_transaksi'),
+            'bisa_cod' => $request->boolean('bisa_cod'),
+            'bisa_ekspedisi' => $request->boolean('bisa_ekspedisi'),
             'status_barang' => $data['status_barang'] ?? $barang->status_barang,
         ]);
 
@@ -156,14 +171,23 @@ class BarangController extends Controller
     {
         return $request->validate([
             'nama_barang' => ['required', 'string', 'max:100'],
-            'kategori' => ['required', 'string', 'max:50'],
+            'kategori' => ['required', Rule::in(Barang::KATEGORI)],
             'harga' => ['required', 'integer', 'min:0'],
             'deskripsi' => ['required', 'string'],
             'kondisi' => ['required', 'in:baru,seperti_baru,bekas'],
             'status_barang' => ['nullable', 'in:tersedia,terjual,nonaktif'],
-            'foto' => ['nullable', 'array'],
+            'foto' => ['nullable', 'array', 'max:8'],
             'foto.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
+    }
+
+    private function pastikanAdaMetode(Request $request): void
+    {
+        if (! $request->boolean('bisa_cod') && ! $request->boolean('bisa_ekspedisi')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'bisa_cod' => 'Pilih minimal satu metode transaksi (COD atau Ekspedisi).',
+            ]);
+        }
     }
 
     private function simpanFoto(Request $request, Barang $barang): void

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'no_hp' => '081200000000',
             'role' => 'admin',
+            'status_akun' => 'aktif',
         ]);
 
         // ===== Penjual + Toko + Barang =====
@@ -33,7 +34,7 @@ class DatabaseSeeder extends Seeder
             ['LemariLama', 'Yogyakarta', 'Vintage & retro finds setiap minggu.'],
         ];
 
-        $kategori = ['Atasan', 'Celana', 'Outer', 'Dress', 'Sepatu'];
+        $kategori = Barang::KATEGORI;
         $kondisi = ['baru', 'seperti_baru', 'bekas'];
 
         $penjuals = [];
@@ -45,6 +46,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'no_hp' => '08130000000' . $i,
                 'role' => 'penjual',
+                'status_akun' => 'aktif',
             ]);
             $penjuals[] = $penjual;
 
@@ -63,7 +65,8 @@ class DatabaseSeeder extends Seeder
                     'harga' => rand(3, 30) * 10000,
                     'deskripsi' => 'Barang preloved berkualitas, dirawat dengan baik. Cocok untuk gaya kasual maupun formal.',
                     'kondisi' => $kondisi[array_rand($kondisi)],
-                    'metode_transaksi' => (bool) rand(0, 1),
+                    'bisa_cod' => (bool) rand(0, 1),
+                    'bisa_ekspedisi' => true,
                     'status_barang' => 'tersedia',
                 ]);
             }
@@ -79,6 +82,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'no_hp' => '08210000000' . $i,
                 'role' => 'pembeli',
+                'status_akun' => 'aktif',
             ]));
         }
 
@@ -115,6 +119,7 @@ class DatabaseSeeder extends Seeder
                 'id_barang' => $barang->id_barang,
                 'id_pembeli' => $pembeli->id_user,
                 'id_penjual' => $penjual->id_user,
+                'metode' => $barang->bisa_cod ? collect(['cod', 'ekspedisi'])->random() : 'ekspedisi',
                 'status_transaksi' => 'selesai',
             ]);
 

@@ -23,6 +23,7 @@
                 <a href="{{ url('/katalog') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('katalog*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Jelajahi</a>
                 @auth
                 <a href="{{ url('/chat') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('chat*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Chat</a>
+                <a href="{{ url('/transaksi') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('transaksi*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Transaksi</a>
                 @endauth
             </div>
 
@@ -55,6 +56,7 @@
                             </div>
                             <a href="{{ url('/profil') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Profil Saya</a>
                             <a href="{{ url('/chat') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Pesan</a>
+                            <a href="{{ url('/transaksi') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Transaksi</a>
                             @if($u->isPenjual() && $u->toko)
                                 <a href="{{ url('/toko/' . $u->toko->id_toko) }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Toko Saya</a>
                                 <a href="{{ url('/barang') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Kelola Barang</a>
@@ -62,7 +64,8 @@
                                 <a href="{{ url('/penjual/daftar') }}" class="flex items-center gap-2 px-4 py-2 text-relove-600 font-medium hover:bg-relove-50">Jadi Penjual</a>
                             @endif
                             @if($u->isAdmin())
-                                <a href="{{ url('/admin/verifikasi') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50">Panel Admin</a>
+                                <a href="{{ url('/admin/verifikasi') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50">Verifikasi Penjual</a>
+                                <a href="{{ url('/admin/akun') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50">Verifikasi Akun</a>
                             @endif
                             <form action="{{ url('/logout') }}" method="POST" class="border-t border-gray-100 mt-1 pt-1">
                                 @csrf

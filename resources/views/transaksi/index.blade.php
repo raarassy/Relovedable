@@ -31,7 +31,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="font-semibold text-gray-800 truncate">{{ $t->barang?->nama_barang ?? 'Barang dihapus' }}</p>
-                            <p class="text-sm text-gray-400">Penjual: {{ $t->penjual->nama ?? '-' }}</p>
+                            <p class="text-sm text-gray-400">Penjual: {{ $t->penjual->nama ?? '-' }}@if($t->metode) &middot; {{ $t->metode === 'cod' ? 'COD' : 'Ekspedisi' }}@endif</p>
                             <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $statusBadge($t->status_transaksi) }}">{{ ucfirst($t->status_transaksi) }}</span>
                         </div>
                         @if($t->status_transaksi === 'selesai')
@@ -60,7 +60,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="font-semibold text-gray-800 truncate">{{ $t->barang?->nama_barang ?? 'Barang dihapus' }}</p>
-                            <p class="text-sm text-gray-400">Pembeli: {{ $t->pembeli->nama ?? '-' }}</p>
+                            <p class="text-sm text-gray-400">Pembeli: {{ $t->pembeli->nama ?? '-' }}@if($t->metode) &middot; {{ $t->metode === 'cod' ? 'COD' : 'Ekspedisi' }}@endif</p>
                         </div>
                         <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $statusBadge($t->status_transaksi) }} shrink-0">{{ ucfirst($t->status_transaksi) }}</span>
                     </div>
