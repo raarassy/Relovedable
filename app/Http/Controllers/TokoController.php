@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Follow;
 use App\Models\Review;
 use App\Models\Toko;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class TokoController extends Controller
@@ -32,9 +33,22 @@ class TokoController extends Controller
 
         $isOwner = auth()->check() && auth()->id() === $penjualId;
 
+        // Transaksi selesai milik pembeli (yang login) dgn toko ini yg belum diulas
+        // -> jadi pintu masuk tombol "Beri Ulasan" di halaman toko
+        $transaksiBelumDiulas = null;
+        if (auth()->check() && ! $isOwner) {
+            $transaksiBelumDiulas = Transaksi::where('id_pembeli', auth()->id())
+                ->where('id_penjual', $penjualId)
+                ->where('status_transaksi', 'selesai')
+                ->whereDoesntHave('review')
+                ->latest('id_transaksi')
+                ->first();
+        }
+
         return view('toko.show', compact(
             'toko', 'jumlahProduk', 'jumlahPengikut', 'ratingRata',
-            'jumlahReview', 'reviews', 'sedangDiikuti', 'isOwner'
+            'jumlahReview', 'reviews', 'sedangDiikuti', 'isOwner',
+            'transaksiBelumDiulas'
         ));
     }
 

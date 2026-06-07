@@ -1,24 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Selamat Datang')
 
-@php
-    // CTA "jadi penjual" menyesuaikan status login & peran
-    $u = auth()->user();
-    if (! $u) {
-        $jualHref = url('/register');
-        $jualLabel = 'Daftar Jadi Penjual';
-    } elseif ($u->isPenjual()) {
-        $jualHref = url('/barang');
-        $jualLabel = 'Kelola Toko';
-    } elseif ($u->isAdmin()) {
-        $jualHref = url('/admin/verifikasi');
-        $jualLabel = 'Panel Admin';
-    } else {
-        $jualHref = url('/penjual/daftar');
-        $jualLabel = 'Jadi Penjual';
-    }
-@endphp
-
 @section('content')
 
 {{-- ===== HERO ===== --}}
@@ -36,8 +18,7 @@
                 Platform jual-beli pakaian preloved untuk mahasiswa. Hemat, ramah lingkungan, dan tetap bergaya — cari & temukan harta karun unikmu di Relovedable.
             </p>
             <div class="mt-7 flex flex-wrap gap-3">
-                <a href="{{ $jualHref }}" class="rounded-full bg-relove-500 hover:bg-relove-600 text-white font-semibold px-7 py-3 shadow-lg transition">{{ $jualLabel }}</a>
-                <a href="{{ url('/katalog') }}" class="rounded-full bg-relove-100 hover:bg-relove-200 text-relove-600 font-semibold px-7 py-3 transition">Lihat Katalog</a>
+                <a href="{{ url('/katalog') }}" class="rounded-full bg-relove-500 hover:bg-relove-600 text-white font-semibold px-7 py-3 shadow-lg transition">Lihat Katalog</a>
             </div>
 
             <div class="mt-8 flex items-center gap-6 text-sm">
