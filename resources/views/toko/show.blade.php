@@ -65,7 +65,13 @@
 
     {{-- Ulasan --}}
     <section class="mt-10">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Ulasan Pembeli</h2>
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Ulasan Pembeli</h2>
+            @if($transaksiBelumDiulas)
+                <a href="{{ url('/transaksi/' . $transaksiBelumDiulas->id_transaksi . '/review') }}"
+                   class="rounded-full bg-relove-500 hover:bg-relove-600 text-white font-semibold px-5 py-2 text-sm shrink-0">⭐ Beri Ulasan</a>
+            @endif
+        </div>
         @if($reviews->isEmpty())
             <p class="text-gray-400 text-sm">Belum ada ulasan.</p>
         @else

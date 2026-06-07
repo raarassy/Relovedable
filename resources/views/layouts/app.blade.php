@@ -22,8 +22,9 @@
                 <a href="{{ url('/') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('/') || request()->is('') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Home</a>
                 <a href="{{ url('/katalog') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('katalog*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Jelajahi</a>
                 @auth
+                @unless(auth()->user()->isAdmin())
                 <a href="{{ url('/chat') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('chat*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Chat</a>
-                <a href="{{ url('/transaksi') }}" class="px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->is('transaksi*') ? 'text-relove-600 bg-relove-50' : 'text-gray-500 hover:text-relove-600 hover:bg-relove-50' }}">Transaksi</a>
+                @endunless
                 @endauth
             </div>
 
@@ -32,12 +33,14 @@
                     <a href="{{ url('/login') }}" class="text-sm font-semibold text-gray-600 hover:text-relove-600 px-3 py-1.5">Masuk</a>
                     <a href="{{ url('/register') }}" class="rounded-full bg-relove-500 hover:bg-relove-600 text-white text-sm font-semibold px-4 py-1.5">Daftar</a>
                 @else
+                    @unless(auth()->user()->isAdmin())
                     <a href="{{ url('/chat') }}" title="Chat"
                        class="grid place-items-center w-9 h-9 rounded-full text-gray-500 hover:text-relove-500 hover:bg-relove-50 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/>
                         </svg>
                     </a>
+                    @endunless
 
                     <details class="relative">
                         <summary class="list-none cursor-pointer">
@@ -55,8 +58,9 @@
                                 <p class="text-xs text-gray-400 truncate">{{ '@' . $u->username }}</p>
                             </div>
                             <a href="{{ url('/profil') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Profil Saya</a>
+                            @unless($u->isAdmin())
                             <a href="{{ url('/chat') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Pesan</a>
-                            <a href="{{ url('/transaksi') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Transaksi</a>
+                            @endunless
                             @if($u->isPenjual() && $u->toko)
                                 <a href="{{ url('/toko/' . $u->toko->id_toko) }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Toko Saya</a>
                                 <a href="{{ url('/barang') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-relove-50 hover:text-relove-600">Kelola Barang</a>
