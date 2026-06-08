@@ -10,10 +10,10 @@
         ? \App\Models\Follow::where('id_diikuti', $barang->toko->id_user)->count()
         : 0;
 
-    // Apakah user saat ini mengikuti toko ini
-    $diikuti = auth()->check() && $barang->toko
-        ? \App\Models\Follow::where('id_pengikut', auth()->id())
-            ->where('id_diikuti', $barang->toko->id_user)
+    // Apakah barang ini difavoritkan user saat ini
+    $difavoritkan = auth()->check()
+        ? \App\Models\Favorit::where('id_user', auth()->id())
+            ->where('id_barang', $barang->id_barang)
             ->exists()
         : false;
 
@@ -44,37 +44,36 @@
         </span>
     </a>
 
-    {{-- Tombol follow toko (atas kanan gambar) --}}
-    @if($barang->toko)
-        @auth
-            <form action="{{ url('/follow/' . $barang->toko->id_user . '/toggle') }}" method="POST"
-                  class="absolute top-2 right-2">
-                @csrf
-                <button type="submit"
-                        class="grid place-items-center w-8 h-8 rounded-full shadow transition
-                               {{ $diikuti ? 'bg-relove-500 text-white' : 'bg-white/90 text-gray-400 hover:text-relove-500' }}"
-                        title="{{ $diikuti ? 'Berhenti mengikuti' : 'Ikuti toko' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                         fill="{{ $diikuti ? 'currentColor' : 'none' }}"
-                         stroke="currentColor" stroke-width="2"
-                         class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
-                    </svg>
-                </button>
-            </form>
-        @else
-            {{-- Guest: link ke login --}}
-            <a href="{{ url('/login') }}"
-               class="absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 shadow text-gray-400 hover:text-relove-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" class="w-4 h-4">
+    {{-- Tombol favorit barang (atas kanan gambar) --}}
+    @auth
+        <form action="{{ url('/favorit/' . $barang->id_barang . '/toggle') }}" method="POST"
+              class="absolute top-2 right-2">
+            @csrf
+            <button type="submit"
+                    class="grid place-items-center w-8 h-8 rounded-full shadow transition
+                           {{ $difavoritkan ? 'bg-relove-500 text-white' : 'bg-white/90 text-gray-400 hover:text-relove-500' }}"
+                    title="{{ $difavoritkan ? 'Hapus dari favorit' : 'Tambah ke favorit' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="{{ $difavoritkan ? 'currentColor' : 'none' }}"
+                     stroke="currentColor" stroke-width="2"
+                     class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
                 </svg>
-            </a>
-        @endauth
-    @endif
+            </button>
+        </form>
+    @else
+        {{-- Guest: link ke login --}}
+        <a href="{{ url('/login') }}"
+           class="absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 shadow text-gray-400 hover:text-relove-500"
+           title="Masuk untuk memfavoritkan">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+            </svg>
+        </a>
+    @endauth
 
     {{-- Info produk --}}
     <div class="p-3">
@@ -96,10 +95,10 @@
                 <span></span>
             @endif
 
-            {{-- Followers toko --}}
-            <span class="flex items-center gap-0.5 text-[11px] text-gray-400 shrink-0">
+            {{-- Pengikut toko --}}
+            <span class="flex items-center gap-0.5 text-[11px] text-gray-400 shrink-0" title="Pengikut toko">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 text-relove-400">
-                    <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+                    <path d="M7.5 6a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0ZM3 19.25C3 15.798 5.798 13 9.25 13h3.5c3.452 0 6.25 2.798 6.25 6.25 0 .414-.336.75-.75.75H3.75a.75.75 0 0 1-.75-.75Zm15.04-9.965a3 3 0 1 0 .92-5.49 4.5 4.5 0 0 1 .47 6.06c1.96.42 3.57 1.84 4.07 3.7H21a.75.75 0 0 0 .75-.75c0-1.55-1.13-2.86-2.71-3.52Z"/>
                 </svg>
                 <span>{{ $followers }}</span>
             </span>

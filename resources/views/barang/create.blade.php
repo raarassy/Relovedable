@@ -14,7 +14,7 @@
             <label class="block text-sm font-medium text-gray-600 mb-1">Foto Barang <span class="text-gray-300">(maksimal 8)</span></label>
             <input type="file" name="foto[]" id="fotoInput" multiple accept="image/*"
                    class="w-full text-sm text-gray-500 file:mr-3 file:rounded-full file:border-0 file:bg-relove-100 file:text-relove-600 file:px-4 file:py-2 file:font-semibold">
-            <p id="fotoInfo" class="text-xs text-gray-400 mt-1.5">Bisa pilih beberapa sekaligus. Maksimal 8 foto, format JPG/PNG/WebP.</p>
+            <p id="fotoInfo" class="text-xs text-gray-400 mt-1.5">Bisa pilih beberapa sekaligus. Maksimal 8 foto, maks 4MB per foto, format JPG/PNG/WebP.</p>
             <div id="fotoPreview" class="flex flex-wrap gap-2 mt-3"></div>
         </div>
 
@@ -90,28 +90,67 @@
     if (!input) return;
     const MAX = 8;
 
-    input.addEventListener('change', function () {
-        const files = Array.from(input.files);
-        preview.innerHTML = '';
+    // Penampung file yang dikumpulkan (biar pilih satu-satu tetap numpuk, nggak ke-replace)
+    let store = new DataTransfer();
 
-        files.forEach(function (file) {
+    input.addEventListener('change', function () {
+        let ditolak = 0;
+        Array.from(input.files).forEach(function (file) {
+            if (!file.type.startsWith('image/')) return;
+            if (store.items.length >= MAX) { ditolak++; return; }
+            store.items.add(file);
+        });
+        input.files = store.files; // sinkron ke input untuk submit
+        render(ditolak);
+    });
+
+    function hapus(index) {
+        const baru = new DataTransfer();
+        Array.from(store.files).forEach(function (file, i) {
+            if (i !== index) baru.items.add(file);
+        });
+        store = baru;
+        input.files = store.files;
+        render(0);
+    }
+
+    function render(ditolak) {
+        preview.innerHTML = '';
+        Array.from(store.files).forEach(function (file, i) {
+            const wrap = document.createElement('div');
+            wrap.className = 'relative';
+
             const img = document.createElement('img');
             img.src = URL.createObjectURL(file);
             img.className = 'w-20 h-20 rounded-xl object-cover border border-relove-100';
-            preview.appendChild(img);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = '×';
+            btn.title = 'Hapus foto';
+            btn.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs leading-none grid place-items-center shadow';
+            btn.addEventListener('click', function () { hapus(i); });
+
+            wrap.appendChild(img);
+            wrap.appendChild(btn);
+            preview.appendChild(wrap);
         });
 
-        if (files.length > MAX) {
-            info.textContent = `Kebanyakan — kamu pilih ${files.length} foto. Maksimal ${MAX}, kurangi dulu ya.`;
+        const n = store.files.length;
+        if (ditolak > 0) {
+            info.textContent = `Maksimal ${MAX} foto. ${ditolak} foto terakhir tidak ditambahkan.`;
             info.className = 'text-xs text-red-500 mt-1.5 font-medium';
-        } else if (files.length > 0) {
-            info.textContent = `${files.length} dari ${MAX} foto dipilih.`;
+        } else if (n >= MAX) {
+            info.textContent = `Batas ${MAX} foto tercapai.`;
+            info.className = 'text-xs text-relove-600 mt-1.5 font-medium';
+        } else if (n > 0) {
+            info.textContent = `${n} dari ${MAX} foto dipilih. Bisa tambah lagi.`;
             info.className = 'text-xs text-gray-500 mt-1.5';
         } else {
-            info.textContent = `Bisa pilih beberapa sekaligus. Maksimal ${MAX} foto, format JPG/PNG/WebP.`;
+            info.textContent = `Bisa pilih beberapa sekaligus. Maksimal ${MAX} foto, maks 4MB per foto, format JPG/PNG/WebP.`;
             info.className = 'text-xs text-gray-400 mt-1.5';
         }
-    });
+    }
 })();
 </script>
 @endsection

@@ -29,7 +29,7 @@
                 @if($sisaSlot < 1)
                     Sudah mencapai batas maksimal 8 foto.
                 @else
-                    Sudah ada {{ $barang->fotoBarangs->count() }} foto, bisa menambah {{ $sisaSlot }} lagi.
+                    Sudah ada {{ $barang->fotoBarangs->count() }} foto, bisa menambah {{ $sisaSlot }} lagi. Maks 4MB per foto.
                 @endif
             </p>
         </div>

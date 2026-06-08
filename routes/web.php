@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FavoritController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -51,7 +52,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil/edit', [ProfileController::class, 'edit']);
     Route::put('/profil', [ProfileController::class, 'update']);
 
-    // Follow toko (menggantikan favorit)
+    // Favorit barang
+    Route::get('/favorit', [FavoritController::class, 'index']);
+    Route::post('/favorit/{barang}/toggle', [FavoritController::class, 'toggle'])->whereNumber('barang');
+
+    // Follow toko (terpisah dari favorit barang)
     Route::post('/follow/{user}/toggle', [FollowController::class, 'toggle']);
 
     // Chat
