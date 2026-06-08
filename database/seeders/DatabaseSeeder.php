@@ -131,5 +131,25 @@ class DatabaseSeeder extends Seeder
                 'ulasan' => 'Barang sesuai foto, penjual ramah & fast respond. Recommended!',
             ]);
         }
+
+        // ===== Transaksi selesai BELUM diulas (uji tombol "Beri Ulasan") =====
+        // Pembeli1 dapat 1 transaksi selesai tanpa review -> tombol "Beri Ulasan" muncul.
+        $penjualUji = $penjuals[0];
+        $barangUji = $semuaBarang
+            ->where('id_toko', $penjualUji->toko->id_toko)
+            ->firstWhere('status_barang', 'tersedia');
+
+        if ($barangUji) {
+            $barangUji->update(['status_barang' => 'terjual']);
+
+            Transaksi::create([
+                'id_barang' => $barangUji->id_barang,
+                'id_pembeli' => $pembelis->first()->id_user,
+                'id_penjual' => $penjualUji->id_user,
+                'metode' => $barangUji->bisa_cod ? 'cod' : 'ekspedisi',
+                'status_transaksi' => 'selesai',
+            ]);
+            // sengaja TANPA Review
+        }
     }
 }
