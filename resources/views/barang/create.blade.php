@@ -14,7 +14,7 @@
             <label class="block text-sm font-medium text-gray-600 mb-1">Foto Barang <span class="text-gray-300">(maksimal 8)</span></label>
             <input type="file" name="foto[]" id="fotoInput" multiple accept="image/*"
                    class="w-full text-sm text-gray-500 file:mr-3 file:rounded-full file:border-0 file:bg-relove-100 file:text-relove-600 file:px-4 file:py-2 file:font-semibold">
-            <p id="fotoInfo" class="text-xs text-gray-400 mt-1.5">Bisa pilih beberapa sekaligus. Maksimal 8 foto, format JPG/PNG/WebP.</p>
+            <p id="fotoInfo" class="text-xs text-gray-400 mt-1.5">Bisa pilih beberapa sekaligus. Maksimal 8 foto, maks 4MB per foto, format JPG/PNG/WebP.</p>
             <div id="fotoPreview" class="flex flex-wrap gap-2 mt-3"></div>
         </div>
 
@@ -147,7 +147,7 @@
             info.textContent = `${n} dari ${MAX} foto dipilih. Bisa tambah lagi.`;
             info.className = 'text-xs text-gray-500 mt-1.5';
         } else {
-            info.textContent = `Bisa pilih beberapa sekaligus. Maksimal ${MAX} foto, format JPG/PNG/WebP.`;
+            info.textContent = `Bisa pilih beberapa sekaligus. Maksimal ${MAX} foto, maks 4MB per foto, format JPG/PNG/WebP.`;
             info.className = 'text-xs text-gray-400 mt-1.5';
         }
     }
