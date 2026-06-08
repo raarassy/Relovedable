@@ -38,7 +38,8 @@ class ReviewController extends Controller
             'ulasan' => $data['ulasan'] ?? null,
         ]);
 
-        return redirect('/transaksi')->with('success', 'Terima kasih atas ulasanmu! ⭐');
+        // Balik ke halaman barang -> rating & ulasan baru langsung terlihat terupdate
+        return redirect('/barang/' . $transaksi->id_barang)->with('success', 'Terima kasih atas ulasanmu! ⭐');
     }
 
     private function pastikanBolehReview(Transaksi $transaksi): void

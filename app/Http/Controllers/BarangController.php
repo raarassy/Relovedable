@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Follow;
 use App\Models\FotoBarang;
 use App\Models\Review;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -63,7 +64,18 @@ class BarangController extends Controller
             ? Follow::where('id_pengikut', auth()->id())->where('id_diikuti', $penjualId)->exists()
             : false;
 
-        return view('barang.show', compact('barang', 'reviews', 'ratingRata', 'jumlahReview', 'serupa', 'sedangDiikuti'));
+        // Transaksi selesai milik pembeli (yang login) untuk barang ini yang belum diulas
+        // -> jadi pintu masuk tombol "Beri Ulasan" langsung di halaman barang
+        $transaksiBelumDiulas = auth()->check()
+            ? Transaksi::where('id_pembeli', auth()->id())
+                ->where('id_barang', $barang->id_barang)
+                ->where('status_transaksi', 'selesai')
+                ->whereDoesntHave('review')
+                ->latest('id_transaksi')
+                ->first()
+            : null;
+
+        return view('barang.show', compact('barang', 'reviews', 'ratingRata', 'jumlahReview', 'serupa', 'sedangDiikuti', 'transaksiBelumDiulas'));
     }
 
     // ===== PENJUAL (butuh role penjual) =====
