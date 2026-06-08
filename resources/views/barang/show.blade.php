@@ -76,9 +76,14 @@
             @endif
 
             {{-- Aksi --}}
-            <div class="mt-6 flex gap-3">
+            <div class="mt-6 space-y-3">
                 @auth
                     @unless($isOwner)
+                        @if($transaksiBelumDiulas)
+                            <a href="{{ url('/transaksi/' . $transaksiBelumDiulas->id_transaksi . '/review') }}"
+                               class="block text-center rounded-xl bg-amber-400 hover:bg-amber-500 text-white font-semibold py-3">⭐ Beri Ulasan untuk Pembelian Ini</a>
+                        @endif
+                        <div class="flex gap-3">
                         <a href="{{ url('/chat/mulai/' . $barang->id_barang) }}"
                            class="flex-1 text-center rounded-xl bg-relove-500 hover:bg-relove-600 text-white font-semibold py-3">💬 Chat Penjual</a>
                         @if($barang->toko)
@@ -88,13 +93,14 @@
                                         class="rounded-xl border px-5 py-3 text-sm font-semibold {{ $sedangDiikuti ? 'border-relove-300 text-relove-600 bg-relove-50' : 'border-relove-200 text-gray-600 hover:bg-relove-50' }}">{{ $sedangDiikuti ? 'Mengikuti ✓' : '+ Ikuti Toko' }}</button>
                             </form>
                         @endif
+                        </div>
                     @else
                         <a href="{{ url('/barang/edit/' . $barang->id_barang) }}"
-                           class="flex-1 text-center rounded-xl border border-relove-200 text-relove-600 font-semibold py-3 hover:bg-relove-50">Edit Barang Ini</a>
+                           class="block text-center rounded-xl border border-relove-200 text-relove-600 font-semibold py-3 hover:bg-relove-50">Edit Barang Ini</a>
                     @endunless
                 @else
                     <a href="{{ url('/login') }}"
-                       class="flex-1 text-center rounded-xl bg-relove-500 hover:bg-relove-600 text-white font-semibold py-3">Masuk untuk Chat / Favorit</a>
+                       class="block text-center rounded-xl bg-relove-500 hover:bg-relove-600 text-white font-semibold py-3">Masuk untuk Chat / Favorit</a>
                 @endauth
             </div>
         </div>
@@ -106,16 +112,25 @@
         @if($reviews->isEmpty())
             <p class="text-gray-400 text-sm">Belum ada ulasan untuk penjual ini.</p>
         @else
-            <div class="space-y-3">
+            <div class="grid sm:grid-cols-2 gap-3">
                 @foreach($reviews as $review)
-                    <div class="bg-white rounded-xl border border-relove-100 p-4">
-                        <div class="flex items-center justify-between">
-                            <p class="font-semibold text-sm text-gray-700">{{ $review->pembeli->nama ?? 'Pengguna' }}</p>
-                            <p class="text-relove-500 text-sm">{{ str_repeat('⭐', (int) $review->rating) }}</p>
+                    @php($p = $review->pembeli)
+                    <div class="bg-white rounded-2xl border border-relove-100 p-5">
+                        <div class="flex items-start gap-3">
+                            @if($p && $p->foto_profil)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($p->foto_profil) }}" class="w-10 h-10 rounded-full object-cover shrink-0">
+                            @else
+                                <span class="grid place-items-center w-10 h-10 rounded-full bg-relove-100 text-relove-600 font-bold shrink-0">{{ strtoupper(substr($p->nama ?? 'U', 0, 1)) }}</span>
+                            @endif
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="font-semibold text-sm text-gray-800 truncate">{{ $p->nama ?? 'Pengguna' }}</p>
+                                    <span class="text-xs text-gray-300 shrink-0">{{ $review->tanggal_review ? \Illuminate\Support\Carbon::parse($review->tanggal_review)->diffForHumans() : '' }}</span>
+                                </div>
+                                <p class="text-relove-500 text-sm leading-none mt-1">{{ str_repeat('★', (int) $review->rating) }}<span class="text-gray-200">{{ str_repeat('★', 5 - (int) $review->rating) }}</span></p>
+                                @if($review->ulasan)<p class="text-sm text-gray-600 mt-2 whitespace-pre-line">{{ $review->ulasan }}</p>@endif
+                            </div>
                         </div>
-                        @if($review->ulasan)
-                            <p class="text-sm text-gray-500 mt-1">{{ $review->ulasan }}</p>
-                        @endif
                     </div>
                 @endforeach
             </div>

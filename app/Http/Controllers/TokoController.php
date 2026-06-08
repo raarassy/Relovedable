@@ -18,13 +18,24 @@ class TokoController extends Controller
 
         $jumlahProduk = $toko->barangs->count();
         $jumlahPengikut = Follow::where('id_diikuti', $penjualId)->count();
-        $ratingRata = Review::where('id_penjual', $penjualId)->avg('rating');
-        $jumlahReview = Review::where('id_penjual', $penjualId)->count();
 
-        $reviews = Review::with('pembeli')
+        // Semua rating sekali ambil -> buat rata-rata, jumlah, distribusi, & % puas
+        $semuaRating = Review::where('id_penjual', $penjualId)->pluck('rating');
+        $jumlahReview = $semuaRating->count();
+        $ratingRata = $jumlahReview ? $semuaRating->avg() : null;
+
+        $distribusi = [];
+        for ($bintang = 5; $bintang >= 1; $bintang--) {
+            $distribusi[$bintang] = $semuaRating->filter(fn ($r) => (int) $r === $bintang)->count();
+        }
+        $persenPuas = $jumlahReview
+            ? (int) round($semuaRating->filter(fn ($r) => $r >= 4)->count() / $jumlahReview * 100)
+            : 0;
+
+        $reviews = Review::with(['pembeli', 'transaksi.barang.fotoBarangs'])
             ->where('id_penjual', $penjualId)
             ->latest('id_review')
-            ->take(10)
+            ->take(20)
             ->get();
 
         $sedangDiikuti = auth()->check()
@@ -48,7 +59,7 @@ class TokoController extends Controller
         return view('toko.show', compact(
             'toko', 'jumlahProduk', 'jumlahPengikut', 'ratingRata',
             'jumlahReview', 'reviews', 'sedangDiikuti', 'isOwner',
-            'transaksiBelumDiulas'
+            'transaksiBelumDiulas', 'distribusi', 'persenPuas'
         ));
     }
 
