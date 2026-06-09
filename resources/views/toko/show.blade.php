@@ -7,7 +7,11 @@
     {{-- Header toko --}}
     <div class="bg-gradient-to-br from-relove-100 to-white rounded-3xl border border-relove-100 p-6 sm:p-8">
         <div class="flex flex-col sm:flex-row gap-6 sm:items-center">
-            <span class="grid place-items-center w-20 h-20 rounded-2xl bg-relove-300 text-white text-3xl font-black shrink-0">{{ strtoupper(substr($toko->nama_toko, 0, 1)) }}</span>
+            @if($toko->user && $toko->user->foto_profil)
+                <img src="{{ \Illuminate\Support\Facades\Storage::url($toko->user->foto_profil) }}" class="w-20 h-20 rounded-2xl object-cover shrink-0">
+            @else
+                <span class="grid place-items-center w-20 h-20 rounded-2xl bg-relove-300 text-white text-3xl font-black shrink-0">{{ strtoupper(substr($toko->nama_toko, 0, 1)) }}</span>
+            @endif
             <div class="flex-1">
                 <h1 class="text-2xl font-extrabold text-gray-900">🏪 {{ $toko->nama_toko }}</h1>
                 <p class="text-sm text-gray-500">oleh {{ $toko->user->nama }} &middot; {{ '@' . $toko->user->username }}</p>

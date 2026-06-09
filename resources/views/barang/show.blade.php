@@ -115,7 +115,11 @@
             @if($barang->toko)
                 <a href="{{ url('/toko/' . $barang->toko->id_toko) }}"
                    class="mt-6 flex items-center gap-3 bg-relove-50 rounded-2xl p-4 border border-relove-100 hover:border-relove-300 transition">
-                    <span class="grid place-items-center w-12 h-12 rounded-full bg-relove-200 text-relove-700 font-bold text-lg">{{ strtoupper(substr($barang->toko->nama_toko, 0, 1)) }}</span>
+                    @if($penjual && $penjual->foto_profil)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($penjual->foto_profil) }}" class="w-12 h-12 rounded-full object-cover shrink-0">
+                    @else
+                        <span class="grid place-items-center w-12 h-12 rounded-full bg-relove-200 text-relove-700 font-bold text-lg shrink-0">{{ strtoupper(substr($barang->toko->nama_toko, 0, 1)) }}</span>
+                    @endif
                     <div class="flex-1">
                         <p class="font-semibold text-gray-800">🏪 {{ $barang->toko->nama_toko }}</p>
                         <p class="text-xs text-gray-400">
