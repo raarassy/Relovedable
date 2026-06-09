@@ -13,7 +13,7 @@
         <div class="max-w-7xl mx-auto px-4 h-14 flex items-center gap-6">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-1.5 shrink-0">
-                <span class="grid place-items-center w-8 h-8 rounded-lg bg-relove-500 text-white font-black text-base">R</span>
+                <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-8 h-8 object-contain">
                 <span class="text-base font-extrabold text-relove-600 tracking-tight">Relovedable</span>
             </a>
 
@@ -112,18 +112,27 @@
         <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
                 <div class="flex items-center gap-2 mb-1">
-                    <span class="grid place-items-center w-7 h-7 rounded-lg bg-relove-500 text-white font-black text-sm">R</span>
+                    <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-7 h-7 object-contain">
                     <span class="font-extrabold text-relove-600">Relovedable</span>
                 </div>
                 <p class="text-xs text-gray-400 max-w-xs">Pilihan terbaik untuk fashion berkelanjutan. Temukan harta karun unik dan berikan kehidupan kedua bagi pakaian favoritmu.</p>
                 <p class="text-xs text-gray-300 mt-3">&copy; {{ date('Y') }} Relovedable. Lovable Selection.</p>
             </div>
-            <div class="text-right">
+            <div class="sm:text-right">
                 <p class="text-sm font-semibold text-gray-700 mb-2">Ikuti Kami</p>
-                <div class="flex gap-3">
-                    <a href="#" class="grid place-items-center w-8 h-8 rounded-full bg-relove-100 text-relove-600 hover:bg-relove-500 hover:text-white transition text-sm font-bold">f</a>
-                    <a href="#" class="grid place-items-center w-8 h-8 rounded-full bg-relove-100 text-relove-600 hover:bg-relove-500 hover:text-white transition text-sm">IG</a>
-                    <a href="#" class="grid place-items-center w-8 h-8 rounded-full bg-relove-100 text-relove-600 hover:bg-relove-500 hover:text-white transition text-sm">✕</a>
+                <div class="flex gap-3 sm:justify-end">
+                    <a href="https://instagram.com/relovedable.id" target="_blank" rel="noopener" title="Instagram @relovedable.id"
+                       class="grid place-items-center w-8 h-8 rounded-full bg-relove-100 text-relove-600 hover:bg-relove-500 hover:text-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9c-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 1.95c-3.14 0-3.51.01-4.75.07-.89.04-1.37.19-1.69.31-.43.17-.73.36-1.05.68-.32.32-.51.62-.68 1.05-.12.32-.27.8-.31 1.69-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.04.89.19 1.37.31 1.69.17.43.36.73.68 1.05.32.32.62.51 1.05.68.32.12.8.27 1.69.31 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.89-.04 1.37-.19 1.69-.31.43-.17.73-.36 1.05-.68.32-.32.51-.62.68-1.05.12-.32.27-.8.31-1.69.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.04-.89-.19-1.37-.31-1.69a2.82 2.82 0 0 0-.68-1.05 2.82 2.82 0 0 0-1.05-.68c-.32-.12-.8-.27-1.69-.31-1.24-.06-1.61-.07-4.75-.07Zm0 3.32a4.57 4.57 0 1 1 0 9.14 4.57 4.57 0 0 1 0-9.14Zm0 7.54a2.97 2.97 0 1 0 0-5.94 2.97 2.97 0 0 0 0 5.94Zm5.82-7.74a1.07 1.07 0 1 1-2.14 0 1.07 1.07 0 0 1 2.14 0Z"/>
+                        </svg>
+                    </a>
+                    <a href="https://wa.me/62859159788313" target="_blank" rel="noopener" title="WhatsApp 0859159788313"
+                       class="grid place-items-center w-8 h-8 rounded-full bg-relove-100 text-relove-600 hover:bg-relove-500 hover:text-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.84c2.11 0 4.09.82 5.58 2.31a7.84 7.84 0 0 1 2.31 5.57c0 4.54-3.69 8.23-8.24 8.23-1.5 0-2.97-.4-4.25-1.16l-.31-.18-3.16.83.84-3.08-.2-.32a8.16 8.16 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.24-8.23Zm-4.53 4.43c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66s1.14 3.08 1.3 3.29c.16.21 2.25 3.44 5.46 4.82.76.33 1.36.53 1.83.68.77.24 1.47.21 2.02.13.62-.09 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37-.32-.16-1.9-.94-2.19-1.04-.29-.11-.51-.16-.72.16-.21.32-.82 1.04-1.01 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.89-1.78-2.21-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.74-.99-2.38-.26-.62-.52-.54-.72-.55-.19-.01-.4-.01-.61-.01Z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
