@@ -15,22 +15,77 @@
     <div class="grid md:grid-cols-2 gap-8 mt-4">
         {{-- GALERI --}}
         <div>
-            <div class="aspect-square rounded-2xl bg-relove-50 border border-relove-100 overflow-hidden">
-                @if($fotos->first())
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($fotos->first()->path_foto) }}"
-                         alt="{{ $barang->nama_barang }}" class="w-full h-full object-cover" id="foto-utama">
-                @else
-                    <div class="w-full h-full grid place-items-center text-relove-300 text-6xl">👕</div>
-                @endif
-            </div>
-            @if($fotos->count() > 1)
-                <div class="grid grid-cols-5 gap-2 mt-3">
-                    @foreach($fotos as $foto)
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($foto->path_foto) }}"
-                             class="aspect-square rounded-lg object-cover border border-relove-100 cursor-pointer hover:border-relove-400"
-                             onclick="document.getElementById('foto-utama').src = this.src">
-                    @endforeach
+            @if($fotos->isEmpty())
+                <div class="aspect-square rounded-2xl bg-relove-50 border border-relove-100 grid place-items-center text-relove-300 text-6xl">👕</div>
+            @else
+                <div id="galeri" data-total="{{ $fotos->count() }}" class="relative aspect-square rounded-2xl bg-relove-50 border border-relove-100 overflow-hidden group">
+                    {{-- Track --}}
+                    <div id="galeri-track" class="flex h-full transition-transform duration-300 ease-out">
+                        @foreach($fotos as $foto)
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($foto->path_foto) }}"
+                                 alt="{{ $barang->nama_barang }}" class="w-full h-full object-cover shrink-0">
+                        @endforeach
+                    </div>
+
+                    @if($fotos->count() > 1)
+                        {{-- Panah --}}
+                        <button type="button" onclick="geserGaleri(-1)"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 shadow opacity-0 group-hover:opacity-100 transition">‹</button>
+                        <button type="button" onclick="geserGaleri(1)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 shadow opacity-0 group-hover:opacity-100 transition">›</button>
+
+                        {{-- Dots --}}
+                        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            @foreach($fotos as $i => $foto)
+                                <span data-dot="{{ $i }}" class="w-2 h-2 rounded-full bg-white/60 transition-all {{ $i === 0 ? 'bg-white w-4' : '' }}"></span>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
+
+                @if($fotos->count() > 1)
+                    <div class="flex gap-2 mt-3 overflow-x-auto pb-1 snap-x [scrollbar-width:thin]">
+                        @foreach($fotos as $i => $foto)
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($foto->path_foto) }}"
+                                 data-thumb="{{ $i }}"
+                                 class="w-20 h-20 shrink-0 snap-start rounded-lg object-cover border-2 border-relove-100 cursor-pointer hover:border-relove-400 transition {{ $i === 0 ? 'border-relove-400' : '' }}"
+                                 onclick="pindahGaleri({{ $i }})">
+                        @endforeach
+                    </div>
+
+                    <script>
+                        (function () {
+                            const g = document.getElementById('galeri');
+                            const total = +g.dataset.total;
+                            let idx = 0;
+                            const track = document.getElementById('galeri-track');
+
+                            window.pindahGaleri = function (i) {
+                                idx = (i + total) % total;
+                                track.style.transform = `translateX(-${idx * 100}%)`;
+                                document.querySelectorAll('[data-dot]').forEach(d =>
+                                    d.classList.toggle('w-4', +d.dataset.dot === idx) ||
+                                    d.classList.toggle('bg-white', +d.dataset.dot === idx));
+                                document.querySelectorAll('[data-thumb]').forEach(t => {
+                                    const aktif = +t.dataset.thumb === idx;
+                                    t.classList.toggle('border-relove-400', aktif);
+                                    if (aktif) t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                                });
+                            };
+                            window.geserGaleri = (step) => pindahGaleri(idx + step);
+
+                            // Swipe di layar sentuh
+                            let x0 = null;
+                            g.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+                            g.addEventListener('touchend', e => {
+                                if (x0 === null) return;
+                                const dx = e.changedTouches[0].clientX - x0;
+                                if (Math.abs(dx) > 40) geserGaleri(dx < 0 ? 1 : -1);
+                                x0 = null;
+                            });
+                        })();
+                    </script>
+                @endif
             @endif
         </div>
 
