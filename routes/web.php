@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil/edit', [ProfileController::class, 'edit']);
     Route::put('/profil', [ProfileController::class, 'update']);
 
+    // Profil publik pengguna lain
+    Route::get('/pengguna/{id}', [ProfileController::class, 'publik'])->whereNumber('id');
+
     // Favorit barang
     Route::get('/favorit', [FavoritController::class, 'index']);
     Route::post('/favorit/{barang}/toggle', [FavoritController::class, 'toggle'])->whereNumber('barang');

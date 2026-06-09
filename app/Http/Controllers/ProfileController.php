@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use App\Models\Review;
+use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +27,28 @@ class ProfileController extends Controller
             ->get();
 
         return view('profil.show', compact('user', 'jumlahFavorit', 'jumlahMengikuti', 'mengikuti'));
+    }
+
+    // Profil publik pengguna lain (mis. penjual melihat pembeli)
+    public function publik($id)
+    {
+        // Profil sendiri diarahkan ke halaman profil pribadi
+        if (auth()->id() === (int) $id) {
+            return redirect('/profil');
+        }
+
+        $user = User::with('toko')->findOrFail($id);
+
+        $jumlahPembelian = Transaksi::where('id_pembeli', $user->id_user)
+            ->where('status_transaksi', 'selesai')
+            ->count();
+
+        $ulasan = Review::with('penjual.toko', 'transaksi.barang')
+            ->where('id_pembeli', $user->id_user)
+            ->latest('tanggal_review')
+            ->get();
+
+        return view('profil.publik', compact('user', 'jumlahPembelian', 'ulasan'));
     }
 
     public function edit()

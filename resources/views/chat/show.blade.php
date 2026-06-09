@@ -17,7 +17,7 @@
                 @endif
             </div>
             <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-800">{{ $lawan->nama }}</p>
+                <a href="{{ url('/pengguna/' . $lawan->id_user) }}" class="font-semibold text-gray-800 hover:text-relove-600">{{ $lawan->nama }}</a>
                 <a href="{{ url('/barang/' . $barang->id_barang) }}" class="text-xs text-relove-500 hover:underline truncate block">{{ $barang->nama_barang }} — Rp {{ number_format($barang->harga, 0, ',', '.') }}</a>
             </div>
 
