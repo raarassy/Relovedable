@@ -22,11 +22,11 @@
             @csrf
             <div>
                 <label class="block text-sm font-medium text-gray-600 mb-2">Rating</label>
-                <div class="flex gap-1 text-3xl" id="rating-stars">
+                <div class="flex gap-1 text-3xl leading-none" id="rating-stars">
                     @for($i = 1; $i <= 5; $i++)
                         <label class="cursor-pointer">
-                            <input type="radio" name="rating" value="{{ $i }}" class="hidden peer" {{ $i === 5 ? 'checked' : '' }} required>
-                            <span class="text-gray-300 peer-checked:text-relove-500 hover:text-relove-400" data-star="{{ $i }}">⭐</span>
+                            <input type="radio" name="rating" value="{{ $i }}" class="hidden" {{ $i === 5 ? 'checked' : '' }} required>
+                            <span class="text-gray-300 transition-colors" data-star="{{ $i }}">★</span>
                         </label>
                     @endfor
                 </div>
@@ -43,4 +43,34 @@
         </form>
     </div>
 </div>
+
+<script>
+    (function () {
+        const wrap = document.getElementById('rating-stars');
+        if (!wrap) return;
+        const stars = [...wrap.querySelectorAll('span[data-star]')];
+        const radios = [...wrap.querySelectorAll('input[name="rating"]')];
+
+        function paint(n) {
+            stars.forEach(s => {
+                const on = Number(s.dataset.star) <= n;
+                s.classList.toggle('text-relove-500', on);
+                s.classList.toggle('text-gray-300', !on);
+            });
+        }
+
+        function selected() {
+            const r = radios.find(r => r.checked);
+            return r ? Number(r.value) : 0;
+        }
+
+        stars.forEach((s, idx) => {
+            s.addEventListener('mouseenter', () => paint(Number(s.dataset.star)));
+            s.addEventListener('click', () => { radios[idx].checked = true; paint(Number(s.dataset.star)); });
+        });
+        wrap.addEventListener('mouseleave', () => paint(selected()));
+
+        paint(selected());
+    })();
+</script>
 @endsection
