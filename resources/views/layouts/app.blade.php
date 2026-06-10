@@ -11,11 +11,11 @@
 
     <nav class="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-14 flex items-center gap-6">
-            {{-- Logo --}}
-            <a href="{{ url('/') }}" class="flex items-center gap-1.5 shrink-0">
-                <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-8 h-8 object-contain">
-                <span class="text-base font-extrabold text-relove-600 tracking-tight">Relovedable</span>
-            </a>
+        {{-- Logo --}}
+        <a href="{{ url('/') }}" class="flex items-center gap-2 shrink-0 transition hover:opacity-90">
+            <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-10 h-10 sm:w-[42px] sm:h-[42px] object-contain">
+            <span class="text-base font-extrabold text-relove-600 tracking-tight">Relovedable</span>        
+        </a>
 
             {{-- Nav links --}}
             <div class="flex items-center gap-1 hidden sm:flex">
@@ -111,10 +111,13 @@
     <footer class="mt-12 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-7 h-7 object-contain">
-                    <span class="font-extrabold text-relove-600">Relovedable</span>
-                </div>
+            <div class="flex items-center gap-2 mb-1">
+                {{-- Ukuran gambar/ikon dinaikkan dari w-7 h-7 menjadi w-10 h-10 (40px) --}}
+                <img src="{{ asset('images/logo-relovedable.png') }}" alt="Relovedable" class="w-10 h-10 object-contain">
+                
+                {{-- Ukuran teks tetap bawaan asli, hanya disesuaikan sedikit tracking-nya agar serasi dengan navbar --}}
+                <span class="font-extrabold text-relove-600 tracking-tight">Relovedable</span>
+            </div>
                 <p class="text-xs text-gray-400 max-w-xs">Pilihan terbaik untuk fashion berkelanjutan. Temukan harta karun unik dan berikan kehidupan kedua bagi pakaian favoritmu.</p>
                 <p class="text-xs text-gray-300 mt-3">&copy; {{ date('Y') }} Relovedable. Lovable Selection.</p>
             </div>
